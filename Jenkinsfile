@@ -2,22 +2,17 @@ pipeline {
     agent any
 
     stages {
-        stage('Clone repository') {
+        stage('Checkout SCM') {
             steps {
-                git 'https://github.com/Amandeepk18/WebAppCI.git'
+                checkout scm
             }
         }
+
         stage('Build Docker Image') {
             steps {
                 script {
-                    def dockerImage = docker.build("my_web_app:${env.BUILD_ID}")
-                }
-            }
-        }
-        stage('Deploy Docker Image') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-creds') {
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-creds') {
+                        def dockerImage = docker.build("amandeepk0018/my_web_app:${env.BUILD_NUMBER}")
                         dockerImage.push()
                     }
                 }
@@ -25,4 +20,3 @@ pipeline {
         }
     }
 }
-
