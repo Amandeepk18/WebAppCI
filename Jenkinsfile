@@ -18,5 +18,16 @@ pipeline {
                 }
             }
         }
+
+        stage('Push to DockerHub') {
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-creds') {
+                        def dockerImage = docker.image("amandeepk0018/my_web_app:${env.BUILD_NUMBER}")
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
     }
 }
